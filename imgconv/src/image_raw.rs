@@ -3,6 +3,8 @@ use std::path::Path;
 use anyhow::Result;
 use image::RgbImage;
 
+use crate::color::revert_color;
+
 pub struct Image {
     pub width: u32,
     pub height: u32,
@@ -23,9 +25,7 @@ impl Image {
         for (x, y, c) in result.enumerate_pixels_mut() {
             let index = x + y * self.width;
             let color = self.data[index as usize];
-            c[0] = ((color >> 8) & 0b11111000) as u8;
-            c[1] = ((color >> 3) & 0b11111100) as u8;
-            c[2] = ((color << 3) & 0b11111000) as u8;
+            (c[0], c[1], c[2]) = revert_color(color);
         }
         result.save(filename)?;
         return Ok(());
