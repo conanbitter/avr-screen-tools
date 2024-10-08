@@ -86,22 +86,22 @@ const BAYER8: [f64; 64] = [
     21.0 / 64.0,
 ];
 
-fn posterize(x: u32, y: u32, r: u8, g: u8, b: u8) -> u16 {
+fn posterize(_x: u32, _y: u32, r: u8, g: u8, b: u8) -> u16 {
     find_color(r, g, b)
 }
 
-const rk: f64 = 0.9;
-const r5: f64 = (1.0 / 0b11111 as f64) * rk;
-const r6: f64 = (1.0 / 0b111111 as f64) * rk;
+const RK: f64 = 0.5;
+const R5: f64 = (1.0 / 0b11111 as f64) * RK;
+const R6: f64 = (1.0 / 0b111111 as f64) * RK;
 
 fn ordered(pattern: &[f64], pattern_width: usize, pattern_height: usize, x: u32, y: u32, r: u8, g: u8, b: u8) -> u16 {
     let pattern_x = x as usize % pattern_width;
     let pattern_y = y as usize % pattern_height;
     let pattern_index = pattern_x + pattern_y * pattern_width;
     let offset = pattern[pattern_index] - 0.5;
-    let r = r as f64 / 255.0 + r5 * offset;
-    let g = g as f64 / 255.0 + r6 * offset;
-    let b = b as f64 / 255.0 + r5 * offset;
+    let r = r as f64 / 255.0 + R5 * offset;
+    let g = g as f64 / 255.0 + R6 * offset;
+    let b = b as f64 / 255.0 + R5 * offset;
     find_color_float(r, g, b)
 }
 
